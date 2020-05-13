@@ -1,0 +1,42 @@
+plugins {
+    kotlin("jvm") version "1.3.72"
+}
+
+group = "io.github.karlatemp"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    // SpigotMC
+    maven(url = "https://hub.spigotmc.org/nexus/content/groups/public")
+    jcenter()
+
+}
+inline fun kotlinx(module: String, version: String? = null): Any =
+    "org.jetbrains.kotlinx:kotlinx-$module${version?.let { ":$version" } ?: ""}"
+
+dependencies {
+    implementation("org.jetbrains:annotations:19.0.0")
+    implementation(kotlin("stdlib-jdk8", "1.3.72"))
+    implementation(kotlinx("coroutines-core", "1.3.4"))
+    implementation(kotlinx("coroutines-io", "0.1.16"))
+    implementation("org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT")
+    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit"))
+}
+//kotlin {
+//    sourceSets {
+//        all {
+//        }
+//    }
+//}
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+}
