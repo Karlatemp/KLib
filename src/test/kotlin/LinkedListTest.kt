@@ -2,6 +2,7 @@ import io.github.karlatemp.klib.ConcurrentLinkedList
 import org.apache.commons.lang.math.RandomUtils
 import org.junit.Test
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 import kotlin.test.assertTrue
@@ -16,11 +17,29 @@ import kotlin.test.assertTrue
 
 class LinkedListTest {
     @Test
+    fun testCopyOnWrite() {
+        val link = CopyOnWriteArrayList<Int>()
+        val counter = AtomicInteger()
+        val threads = LinkedList<Thread>()
+        val ending = 100000
+        repeat(50) {
+            thread {
+                while (true) {
+                    val count = counter.getAndIncrement()
+                    if (count > ending) break
+                    link.add(count)
+                }
+            }.let { threads.add(it) }
+        }
+        threads.forEach { it.join() }
+    }
+
+    @Test
     fun testCor() {
         val counter = AtomicInteger()
         val threads = LinkedList<Thread>()
         val link = ConcurrentLinkedList<Int>()
-        val ending = 10000
+        val ending = 100000
         repeat(50) {
             thread {
                 while (true) {
