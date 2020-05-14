@@ -14,6 +14,33 @@ import java.util.concurrent.atomic.AtomicReference
 /*
  * Status: allocated, inserted, removed
  *
+ *
+ * Insert:
+ * --------[Previous]-----------[Next]-----------
+ *                   [Value]
+ *
+ * --------[Previous]-----------[Next]-----------
+ *                 [Value(Locked)]
+ *
+ * --------[Locked P]-----------[Next]-----------
+ *                 [Value(Locked)]
+ *
+ * --------[Locked P]-----------[L  N]-----------
+ *                 [Value(Locked)]
+ *
+ * --------[Locked P]-----------[L  N]-----------
+ *              |                  |
+ *              |-[Value(Locked)] -|
+ *
+ * --------[Locked P]           [L  N]-----------
+ *              |                  |
+ *              |-[Value(Locked)] -|
+ *
+ * --------[Locked P]---[Value(Locked)]----[L  N]-----------
+ *
+ * --------[Previous]---[    Value    ]----[Next]-----------
+ *
+ *
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class ConcurrentLinkedList<T> : Iterable<T> {
