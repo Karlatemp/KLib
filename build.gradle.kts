@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.3.72"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 group = "io.github.karlatemp"
@@ -11,8 +12,28 @@ repositories {
     // SpigotMC
     maven(url = "https://hub.spigotmc.org/nexus/content/groups/public")
     jcenter()
-
 }
+
+tasks.withType(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+    dependencies {
+        exclude {
+            when ("${it.moduleGroup}:${it.moduleName}") {
+                "net.md-5:bungeecord-chat" -> true
+                "org.spigotmc:spigot-api" -> true
+                "commons-lang:commons-lang" -> true
+                "org.yaml:snakeyaml" -> true
+                "com.google.code.gson:gson" -> true
+                "com.google.guava:guava" -> true
+
+                else -> {
+                    println("${it.moduleGroup} ${it.moduleName} ${it.moduleVersion}")
+                    false
+                }
+            }
+        }
+    }
+}
+
 inline fun kotlinx(module: String, version: String? = null): Any =
     "org.jetbrains.kotlinx:kotlinx-$module${version?.let { ":$version" } ?: ""}"
 
@@ -25,6 +46,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
 }
+
 //kotlin {
 //    sourceSets {
 //        all {
