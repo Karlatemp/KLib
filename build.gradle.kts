@@ -58,6 +58,7 @@ tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        kotlinOptions.freeCompilerArgs += "-XXLanguage:+PolymorphicSignature"
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
