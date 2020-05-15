@@ -8,7 +8,6 @@
 
 package io.github.karlatemp.klib
 
-import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.plugin.java.JavaPlugin
 
 class BukkitStartup : JavaPlugin() {
@@ -22,17 +21,8 @@ class BukkitStartup : JavaPlugin() {
     }
 
     override fun onEnable() {
-        listen<AsyncPlayerChatEvent> {
-            if (message == "复读") {
-                listen<AsyncPlayerChatEvent> { job ->
-                    if (message == "取消") {
-                        job.complete()
-                    } else {
-                        nextAsyncTick()
-                        player.sendMessage(message)
-                    }
-                }
-            }
-        }
+        println(obcPath)
+        println(nmsPath)
+        println(nmsVersion)
     }
 }

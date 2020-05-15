@@ -43,6 +43,7 @@ dependencies {
     implementation(kotlinx("coroutines-core", "1.3.4"))
     implementation(kotlinx("coroutines-io", "0.1.16"))
     implementation("org.spigotmc:spigot-api:1.15.2-R0.1-SNAPSHOT")
+    implementation("org.apache.httpcomponents:httpclient:4.5.12")
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
 }
