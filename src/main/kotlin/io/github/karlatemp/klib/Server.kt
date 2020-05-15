@@ -13,23 +13,31 @@ package io.github.karlatemp.klib
 
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
-import org.bukkit.command.CommandMap
+import org.bukkit.command.SimpleCommandMap
 import org.bukkit.plugin.SimplePluginManager
 import org.bukkit.plugin.java.JavaPlugin
 
-val commandMap: CommandMap by lazy {
+private val `SimpleCommandMap-knownCommands` =
+    SimpleCommandMap::class.java.getDeclaredField("knownCommands").also { it.isAccessible = true }
+
+fun SimpleCommandMap.commands(): MutableMap<String, Command> {
+    @Suppress("UNCHECKED_CAST")
+    return `SimpleCommandMap-knownCommands`[this] as MutableMap<String, Command>
+}
+
+val commandMap: SimpleCommandMap by lazy {
     val server = Bukkit.getServer()
     // Try get from server
     runCatching {
         return@lazy server.javaClass.getDeclaredMethod("getCommandMap").also {
             it.isAccessible = true
-        }.invoke(server) as CommandMap
+        }.invoke(server) as SimpleCommandMap
     }
     // Try get from PluginManager
     val manager = server.pluginManager as SimplePluginManager
     runCatching {
         return@lazy SimplePluginManager::class.java.getDeclaredField("commandMap").also { it.isAccessible = true }
-            .get(manager) as CommandMap
+            .get(manager) as SimpleCommandMap
     }
     runCatching {
         val field = Command::class.java.getDeclaredField("commandMap").also { it.isAccessible = true }
@@ -41,7 +49,7 @@ val commandMap: CommandMap by lazy {
                     if (commands.isEmpty()) return@repeat
                     it.getCommand(commands.keys.random())!!
                 }
-                return@lazy field[cmd] as CommandMap
+                return@lazy field[cmd] as SimpleCommandMap
             }
         }
     }
