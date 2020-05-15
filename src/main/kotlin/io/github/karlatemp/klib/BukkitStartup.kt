@@ -31,11 +31,12 @@ class BukkitStartup : JavaPlugin() {
         }
     }
 
-    fun openTest() {
+    private fun openTest() {
         println(obcPath)
         println(nmsPath)
         println(nmsVersion)
         listen<PlayerJoinEvent> {
+            player.sendMessage("SB")
             player.inventory.addItem(buildItem {
                 this type Material.DIAMOND named "加速火把" lore {
                     add("该加速了")
