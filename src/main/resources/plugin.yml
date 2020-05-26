@@ -1,5 +1,5 @@
 name: KLib
 author: Karlatemp
-version: 1.0-SNAPSHOT
+version: 1.1-Alpha
 main: io.github.karlatemp.klib.BukkitStartup
 
