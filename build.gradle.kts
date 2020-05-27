@@ -24,7 +24,7 @@ plugins {
 
 
 group = "io.github.karlatemp"
-version = "1.1-Alpha"
+version = "1.2-Alpha"
 
 repositories {
     mavenLocal()
@@ -57,6 +57,7 @@ tasks.withType(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class
 
 tasks.named("jar").get().enabled = false
 
+@Suppress("NOTHING_TO_INLINE")
 inline fun kotlinx(module: String, version: String? = null): Any =
     "org.jetbrains.kotlinx:kotlinx-$module${version?.let { ":$version" } ?: ""}"
 

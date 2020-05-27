@@ -1,4 +1,4 @@
-import io.github.karlatemp.klib.I18n
+//import io.github.karlatemp.klib.I18n
 import io.github.karlatemp.klib.formatter.FEFormatter
 import io.github.karlatemp.klib.formatter.LinkedTemplate
 import org.junit.Test
@@ -25,7 +25,4 @@ class FormatterTest {
         }
     }
 
-    fun a() {
-        I18n { key -> null }["message.welcome"].get()
-    }
 }

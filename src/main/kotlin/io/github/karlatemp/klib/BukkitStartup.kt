@@ -8,11 +8,11 @@
 
 package io.github.karlatemp.klib
 
-import org.bukkit.Material
-import org.bukkit.attribute.Attribute
-import org.bukkit.attribute.AttributeModifier
-import org.bukkit.enchantments.Enchantment
-import org.bukkit.event.player.PlayerJoinEvent
+import io.github.karlatemp.klib.i18n.i18n
+import io.github.karlatemp.klib.i18n.i18nLoader
+import io.github.karlatemp.klib.plugindata.dataClassOf
+import io.github.karlatemp.klib.plugindata.metadataOf
+import io.github.karlatemp.klib.reflect.jarFile
 import org.bukkit.plugin.java.JavaPlugin
 
 class BukkitStartup : JavaPlugin() {
@@ -35,18 +35,11 @@ class BukkitStartup : JavaPlugin() {
         println(obcPath)
         println(nmsPath)
         println(nmsVersion)
-        listen<PlayerJoinEvent> {
-            player.sendMessage("SB")
-            player.inventory.addItem(buildItem {
-                this type Material.DIAMOND named "加速火把" lore {
-                    add("该加速了")
-                } attribute {
-                    this.attribute(Attribute.GENERIC_MOVEMENT_SPEED)
-                        .amount(3.0)
-                        .operation(AttributeModifier.Operation.ADD_NUMBER)
-                }
-                Enchantment.DAMAGE_ALL enchant 444
-            })
-        }
+        println(metadataOf(this) === metadataOf(this))
+        println(dataClassOf(this))
+        println(this.jarFile)
+        println("Loader: $i18nLoader")
+        println(this.i18n)
+        println(this.i18n["test"].get())
     }
 }
