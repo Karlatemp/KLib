@@ -31,6 +31,11 @@ class BukkitStartup : JavaPlugin() {
         }
     }
 
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun println(any: Any?) {
+        logger.info(any.toString())
+    }
+
     private fun openTest() {
         println(obcPath)
         println(nmsPath)
@@ -41,5 +46,8 @@ class BukkitStartup : JavaPlugin() {
         println("Loader: $i18nLoader")
         println(this.i18n)
         println(this.i18n["test"].get())
+        println("== == ==")
+        println(this.i18nLoader["en_us"]["test"].get())
+        println(this.i18nLoader["zh_cn_0_0_0"]["test"].get())
     }
 }

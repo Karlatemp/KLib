@@ -8,6 +8,7 @@
 
 package io.github.karlatemp.klib.i18n
 
+import io.github.karlatemp.klib.RAFOutputStream
 import io.github.karlatemp.klib.formatter.FEFormatter
 import io.github.karlatemp.klib.formatter.Formatter
 import io.github.karlatemp.klib.plugindata.metadataOf
@@ -29,11 +30,20 @@ class PluginI18nLoader(
     private val logger = plugin.logger
     val i18n = HashMap<String, LocaleI18n>()
 
-    private fun ZipFile.scanJar() {
+    private fun ZipFile.scanJar(i18nDir: File) {
         entries().iterator().forEach { entry ->
             if (entry.isDirectory) return@forEach
             if (entry.name.startsWith("i18n/")) {
                 val name = entry.name.substring(5)
+                if (name.contains('/')) return@forEach
+                val file = File(i18nDir, name)
+                if (!file.isFile) {
+                    getInputStream(entry).use { input ->
+                        RAFOutputStream(file, "rw").use {
+                            input.copyTo(it)
+                        }
+                    }
+                }
                 InputStreamReader(getInputStream(entry), Charsets.UTF_8).use {
                     it.loadI18n(name, "\$zip!/${entry.name}")
                 }
@@ -76,8 +86,9 @@ class PluginI18nLoader(
     fun reload() {
         empty.templates.clear()
         i18n.clear()
-        ZipFile(plugin.jarFile).use { it.scanJar() }
-        File(plugin.dataFolder, "i18n").also { it.mkdirs() }.scanDir()
+        val id = File(plugin.dataFolder, "i18n")
+        ZipFile(plugin.jarFile).use { it.scanJar(id) }
+        id.also { it.mkdirs() }.scanDir()
         fixLink()
     }
 
@@ -124,31 +135,40 @@ class PluginI18nLoader(
     override fun toString(): String {
         val rootView = SubView()
         val views = mutableMapOf<LocaleI18n, SubView>()
-        i18n.values.forEach { i18 ->
+        val all = mutableSetOf<LocaleI18n>()
+
+        tailrec fun scan(i18n: LocaleI18n) {
+            all.add(i18n)
+            scan(i18n.parent ?: return)
+        }
+
+        i18n.values.forEach { scan(it) }
+
+        all.forEach { i18 ->
             if (i18.parent == null) {
                 rootView.addLast(i18)
             } else {
                 views.computeIfAbsent(i18.parent!!) { SubView() }.add(i18)
             }
         }
+        println(rootView)
+        println(views)
         return buildString {
             fun String.make(view: SubView) {
                 view.forEach { i18 ->
                     append(this)
                     append(i18)
                     val sv = views[i18]
+                    append('\n')
                     if (!(sv == null || sv.isEmpty())) {
-                        append(":\n")
                         "$this  ".make(sv)
-                    } else {
-                        append('\n')
                     }
                 }
             }
-            "".make(rootView)
+            "  ".make(rootView)
         }.let {
             if (it.isEmpty()) return@let "I18nLoader{<None i18n>}"
-            it
+            "I18nLoader{\n$it\n}"
         }
     }
 
