@@ -24,7 +24,7 @@ plugins {
 
 
 group = "io.github.karlatemp"
-version = "1.2-Alpha"
+version = "1.2.1-Alpha"
 
 repositories {
     mavenLocal()

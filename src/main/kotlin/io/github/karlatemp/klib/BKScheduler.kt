@@ -27,8 +27,9 @@ suspend fun ensureServerThread() {
 
 suspend fun nextTick() {
     val scheduler = scheduler()
-    suspendCoroutine<Unit> {
+    return suspendCoroutine {
         BukkitScheduler.scheduler.runTask(scheduler.owner, Runnable {
+            Thread.dumpStack()
             it.resume(Unit)
         })
     }
@@ -36,8 +37,9 @@ suspend fun nextTick() {
 
 suspend fun nextAsyncTick() {
     val scheduler = scheduler()
-    suspendCoroutine<Unit> {
+    return suspendCoroutine {
         BukkitScheduler.scheduler.runTaskAsynchronously(scheduler.owner, Runnable {
+            scheduler.directRun.set(true)
             it.resume(Unit)
         })
     }

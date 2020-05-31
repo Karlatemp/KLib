@@ -12,6 +12,7 @@ import kotlinx.coroutines.*
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import java.util.concurrent.Executor
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 
@@ -19,6 +20,8 @@ import kotlin.coroutines.resume
 class BukkitScheduler(val owner: Plugin) : ExecutorCoroutineDispatcher(), Delay, Executor {
     override val executor: Executor
         get() = this
+    internal var directRun = AtomicBoolean(false)
+
     @ExperimentalStdlibApi
     override val key: CoroutineContext.Key<*>
         get() = CoroutineDispatcher
@@ -47,7 +50,7 @@ class BukkitScheduler(val owner: Plugin) : ExecutorCoroutineDispatcher(), Delay,
     }
 
     override fun execute(command: Runnable) {
-        if (Bukkit.isPrimaryThread()) {
+        if (directRun.compareAndSet(true,false) || Bukkit.isPrimaryThread()) {
             command.run()
         } else {
             scheduler.runTask(owner, command)

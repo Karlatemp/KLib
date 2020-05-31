@@ -13,6 +13,7 @@ import io.github.karlatemp.klib.i18n.i18nLoader
 import io.github.karlatemp.klib.plugindata.dataClassOf
 import io.github.karlatemp.klib.plugindata.metadataOf
 import io.github.karlatemp.klib.reflect.jarFile
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 
 class BukkitStartup : JavaPlugin() {
@@ -28,6 +29,13 @@ class BukkitStartup : JavaPlugin() {
     override fun onEnable() {
         if (java.lang.Boolean.getBoolean("klib.test")) {
             openTest()
+            listen<PlayerJoinEvent> {
+                player.sendMessage("Hi")
+                nextAsyncTick()
+                player.sendMessage("Asy! ${Thread.currentThread().name}")
+                ensureServerThread()
+                player.sendMessage("Server Thread! ${Thread.currentThread().name}")
+            }
         }
     }
 
