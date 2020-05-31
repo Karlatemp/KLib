@@ -2,7 +2,7 @@ buildscript {
     repositories {
         maven("https://gitee.com/Karlatemp/Karlatemp-repo/raw/master/")
     }
-    dependencies.classpath("io.github.karlatemp:Java8Converter:1.0.2")
+    dependencies.classpath("io.github.karlatemp:Java8Converter:1.0.3")
 }
 
 io.github.karlatemp.java8converter.Java8Converter().apply(project)
@@ -13,6 +13,10 @@ tasks.named("java8converter", io.github.karlatemp.java8converter.ConverterTask::
         filter {
             name.startsWith("io/github/karlatemp/klib/")
         }
+        resource {
+            name.endsWith(".yml")
+        }
+        "version" property project.version
     }
 }
 
