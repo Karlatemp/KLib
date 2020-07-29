@@ -10,7 +10,11 @@ package io.github.karlatemp.klib.i18n
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
+import ninja.leaping.configurate.ConfigurationNode
+import ninja.leaping.configurate.ValueType
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 import org.yaml.snakeyaml.Yaml
+import java.io.BufferedReader
 import java.io.Reader
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -142,4 +146,38 @@ private fun registerParsers() {
             }
         }
     }, "yaml", "yml")
+    I18nResourceParsers.register("conf", object : I18nResourceParserImplementable {
+        override fun invoke(p1: Reader): MutableMap<String, String> {
+            val hocon = HoconConfigurationLoader.builder()
+                .setSource { BufferedReader(p1) }
+                .build()
+                .load()
+            val result = hashMapOf<String, String>()
+            resolve(hocon, result)
+            return result
+        }
+
+        private fun resolve(conf: ConfigurationNode, result: MutableMap<String, String>) {
+
+            when (conf.valueType) {
+                ValueType.MAP,
+                ValueType.LIST -> {
+                    if (conf.hasListChildren())
+                        conf.childrenList.forEach { configurationNode ->
+                            resolve(configurationNode, result)
+                        }
+                    if (conf.hasMapChildren())
+                        conf.childrenMap.values.forEach { configurationNode ->
+                            resolve(configurationNode, result)
+                        }
+                }
+                ValueType.NULL -> {
+                    // NULL!
+                }
+                ValueType.SCALAR -> {
+                    result[conf.path.joinToString(".") { it.toString() }] = conf.value.toString()
+                }
+            }
+        }
+    })
 }

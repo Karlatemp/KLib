@@ -14,6 +14,29 @@ import kotlin.test.assertTrue
 
 class ResourceParserTester {
     @Test
+    fun testHocon() {
+        @Language("conf")
+        val hocon = """
+hi = Hello
+test = [
+  {
+    hi = "hi!"
+  },
+  "FAQ",
+  {fa = "Q"}
+]
+hum {
+  hu: "FU"
+}
+        """
+        val parser = I18nResourceParsers["conf"] ?: error("Hocon not found")
+        val result = parser.invoke(StringReader(hocon))
+        result.forEach { (t, u) ->
+            println("\"$t\" to \"$u\",")
+        }
+    }
+
+    @Test
     fun testYaml() {
         println("== == == ==[ YAML ]== == == ==")
         val parser = I18nResourceParsers["yaml"] ?: error("Yaml not found")
