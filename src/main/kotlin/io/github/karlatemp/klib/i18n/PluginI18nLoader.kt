@@ -39,6 +39,7 @@ class PluginI18nLoader(
                 val file = File(i18nDir, name)
                 if (!file.isFile) {
                     getInputStream(entry).use { input ->
+                        file.parentFile.mkdirs()
                         RAFOutputStream(file, "rw").use {
                             input.copyTo(it)
                         }

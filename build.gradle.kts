@@ -22,7 +22,7 @@ tasks.named("java8converter", io.github.karlatemp.java8converter.ConverterTask::
 
 plugins {
     kotlin("jvm") version "1.3.72"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("com.github.johnrengelman.shadow") version "6.0.0"
 //     id("io.github.karlatemp.Java8Converter") version "1.0.0-Alpha"
 }
 
@@ -39,9 +39,11 @@ repositories {
     maven(url = "https://hub.spigotmc.org/nexus/content/groups/public")
     jcenter()
 }
-
+tasks.create("buildAll") {
+    dependsOn("jar", "java8converter")
+}
 tasks.withType(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    this.archiveClassifier.convention("").set("")
+    this.archiveClassifier.convention("all").set("all")
     dependencies {
         exclude {
             when ("${it.moduleGroup}:${it.moduleName}") {
@@ -61,7 +63,7 @@ tasks.withType(com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class
     }
 }
 
-tasks.named("jar").get().enabled = false
+//tasks.named("jar").get().enabled = false
 
 @Suppress("NOTHING_TO_INLINE")
 inline fun kotlinx(module: String, version: String? = null): Any =
