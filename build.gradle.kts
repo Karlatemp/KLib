@@ -11,7 +11,7 @@ tasks.named("java8converter", io.github.karlatemp.java8converter.ConverterTask::
     dependsOn("shadowJar")
     setup {
         filter {
-            name.startsWith("io/github/karlatemp/klib/")
+            name.startsWith("io/github/karlatemp/klib/unsafe/")
         }
         resource {
             name.endsWith(".yml")
@@ -33,6 +33,8 @@ version = "1.2.1-Alpha"
 repositories {
     mavenLocal()
     mavenCentral()
+    // Sponge
+    maven(url = "https://repo.spongepowered.org/maven")
     // SpigotMC
     maven(url = "https://hub.spigotmc.org/nexus/content/groups/public")
     jcenter()
@@ -76,6 +78,7 @@ dependencies {
     implementation("org.apache.httpcomponents:httpclient:4.5.12")
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
+    implementation("org.spongepowered:configurate-hocon:3.6.1")
 }
 
 //kotlin {
