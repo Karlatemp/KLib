@@ -72,7 +72,7 @@ open class ArgumentAction(val slot: Int) : Action() {
         buffer: StringBuilder,
         vararg arguments: String
     ) {
-        (buffer.getOrNull(slot)
+        (arguments.getOrNull(slot)
             ?: return buffer.append("{$slot}").let {})
             .apply { buffer.append(this) }
     }
